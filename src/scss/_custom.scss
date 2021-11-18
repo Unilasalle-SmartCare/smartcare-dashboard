@@ -1,1 +1,39 @@
 // Here you can add other styles
+
+
+
+button, a {
+  &.loading {
+    &::before {
+      content: '';
+      display: inline-block;
+      vertical-align: middle;
+      width: .75rem;
+      height: .75rem;
+      margin-right: 0.5rem;
+      border: 2px solid;
+      border-color: white white white transparent;
+      border-radius: 100%;
+      animation: loading 0.5s linear infinite;
+
+      @keyframes loading {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    }
+  }
+}
+
+.c-sidebar-nav-item {
+  .c-sidebar-nav-link {
+    white-space: nowrap;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      vertical-align: middle;
+      width: 20px;
+    }
+  }
+}
