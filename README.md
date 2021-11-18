@@ -21,16 +21,26 @@ CoreUI is meant to be the UX game changer. Pure & transparent code is devoid of 
 
 ## Table of Contents
 
-* [Versions](#versions)
-* [CoreUI Pro](#coreui-pro)
-* [Installation](#installation)
-* [Basic usage](#create-react-app)
-* [What's included](#whats-included)
-* [Documentation](#documentation)
-* [Versioning](#versioning)
-* [Creators](#creators)
-* [Community](#community)
-* [Copyright and License](#copyright-and-license)
+- [CoreUI Free React Admin Template v3](#coreui-free-react-admin-template-v3)
+  - [Table of Contents](#table-of-contents)
+  - [Versions](#versions)
+  - [CoreUI Pro](#coreui-pro)
+  - [Installation](#installation)
+    - [Clone repo](#clone-repo)
+    - [Copy and Paste](#copy-and-paste)
+  - [Create React App](#create-react-app)
+    - [Basic usage](#basic-usage)
+    - [Build](#build)
+  - [What's included](#whats-included)
+  - [Documentation](#documentation)
+    - [:film_strip: How to setup coreui react theme in laravel. Video tutorial available here](#film_strip-how-to-setup-coreui-react-theme-in-laravel-video-tutorial-available-here)
+  - [Versioning](#versioning)
+  - [Creators](#creators)
+  - [Community](#community)
+  - [Copyright and License](#copyright-and-license)
+  - [Support CoreUI Development](#support-coreui-development)
+  - [Componentes](#componentes)
+  - [ZoomCanvas](#zoomcanvas)
 
 ## Versions
 
@@ -175,3 +185,9 @@ There is only one limitation you can't can’t re-distribute the CoreUI as stock
 CoreUI is an MIT licensed open source project and completely free to use. However, the amount of effort needed to maintain and develop new features for the project is not sustainable without proper financial backing. You can support development by buying [CoreUI Pro Version](https://coreui.io/pro/).
 
 We're also open to conversations regarding custom sponsorship / consulting arrangements. Get in touch on [Twitter](https://twitter.com/lukaszholeczek).
+
+## Componentes
+(https://coreui.io/react/docs/4.0/components/button/)
+
+## ZoomCanvas
+(https://codepen.io/chengarda/pen/wRxoyB)
