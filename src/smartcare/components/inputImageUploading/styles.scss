@@ -1,0 +1,36 @@
+.upload__image-wrapper {
+  text-align: center;
+
+  .image-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1024px;
+    max-height: 576px;
+    margin: 0 auto 24px;
+    overflow: hidden;
+    background: white;
+
+    &::before {
+      content: '';
+      display: block;
+      padding-top: 56.25%;
+    }
+
+    img {
+      position: absolute;
+      display: block;
+      top: 50%;
+      left: 50%;
+      max-width: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: contain;
+    }
+  }
+
+  .image-item__btn-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+}
