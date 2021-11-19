@@ -35,6 +35,7 @@ const loading = (
 )
 
 const Dashboard = () => {
+  const dispatch = useDispatch()
 
   // Check user logged
   const user = useSelector(({ user }) => user)
@@ -45,8 +46,13 @@ const Dashboard = () => {
   }
   // / Check user logged
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+
+    dispatch({ type: 'set', user: undefined })
+  }
+
   const TheSidebar = () => {
-    const dispatch = useDispatch()
     const show = useSelector(state => state.sidebarShow)
   
     return (
@@ -108,7 +114,7 @@ const Dashboard = () => {
             <CHeaderNavLink href="https://raphael-abreu.github.io/projects/smartCare/" target="_blank">Documentação</CHeaderNavLink>
           </CHeaderNavItem>
           <CHeaderNavItem className="px-3" >
-            <CHeaderNavLink href="/">Sair</CHeaderNavLink>
+            <CHeaderNavLink onClick={handleLogout}>Sair</CHeaderNavLink>
           </CHeaderNavItem>
         </CHeaderNav>
       </CHeader>
