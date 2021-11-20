@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 import {
   CButton,
   CCard,
@@ -26,6 +28,7 @@ const Register = () => {
   const [passwordConfirmationState, setPasswordConfirmationState] = useState("")
   const [loadingRequestState, setLoadingRequestState] = useState(false)
   const history = useHistory()
+  const dispatch = useDispatch()
 
   const handleValidate = (e) => {
 
@@ -38,20 +41,27 @@ const Register = () => {
     
     setLoadingRequestState(true)
 
-    const response = await request({ 
-      method: "post", 
-      endpoint: `${process.env.REACT_APP_BASE_API_URL}register`,
-      params: {
-        username: usernameState,
-        email: emailState,
-        password: passwordState,
-        passwordConfirmation: passwordConfirmationState,
+    try {
+      const response = await request({ 
+        method: "post", 
+        endpoint: `${process.env.REACT_APP_BASE_API_URL}register`,
+        params: {
+          username: usernameState,
+          email: emailState,
+          password: passwordState,
+          passwordConfirmation: passwordConfirmationState,
+        }
+      })
+  
+      if (response?.success) {
+        dispatch({type: 'set', user: response?.data })
+        history.push("/dashboard")
+      } else {
+        (response?.errors || []).foreach(error => {
+          toast.error(`${error} 🤯`)
+        })
       }
-    })
-
-    if (response || true) {
-      history.push("/dashboard")
-    }
+    } catch (error) { }
 
     setLoadingRequestState(false)
   }

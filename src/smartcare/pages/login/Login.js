@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 import {
   CButton,
   CCard,
@@ -37,24 +38,25 @@ const Login = () => {
     
     setLoadingRequestState(true)
 
-    const response = await request({ 
-      method: "post", 
-      endpoint: `${process.env.REACT_APP_BASE_API_URL}login`,
-      params: {
-        email: emailState,
-        password: passwordState,
-      }
-    })
-  
-    if (response || true) {
+    try {
+      const response = await request({ 
+        method: "post", 
+        endpoint: `${process.env.REACT_APP_BASE_API_URL}login`,
+        params: {
+          email: emailState,
+          password: passwordState,
+        }
+      })
       
-      dispatch({type: 'set', user: {
-        name: "izau",
-        email: emailState
-      } })
-
-      history.push("/dashboard")
-    }
+      if (response?.success) {
+        dispatch({type: 'set', user: response?.data })
+        history.push("/dashboard")
+      } else {
+        (response?.errors || []).foreach(error => {
+          toast.error(`${error} 🤯`)
+        })
+      }
+    } catch (error) { }
 
     setLoadingRequestState(false)
   }
