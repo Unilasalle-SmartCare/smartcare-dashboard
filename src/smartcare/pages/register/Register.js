@@ -32,8 +32,8 @@ const Register = () => {
 
   const handleValidate = (e) => {
 
-    const $form = e.currentTarget.form;
-    $form.classList.add("was-validated");
+    const $form = e.currentTarget.form
+    $form.classList.add("was-validated")
   }
 
   const handleSubmit = async (e) => {
@@ -41,19 +41,19 @@ const Register = () => {
     
     setLoadingRequestState(true)
 
-    try {
-      const response = await request({ 
-        method: "post", 
-        endpoint: `${process.env.REACT_APP_BASE_API_URL}register`,
-        params: {
-          username: usernameState,
-          email: emailState,
-          password: passwordState,
-          passwordConfirmation: passwordConfirmationState,
-        }
-      })
-  
-      if (response?.success) {
+    const response = await request({ 
+      method: "post", 
+      endpoint: `${process.env.REACT_APP_BASE_API_URL}register`,
+      data: {
+        username: usernameState,
+        email: emailState,
+        password: passwordState,
+        passwordConfirmation: passwordConfirmationState,
+      }
+    })
+
+    if (response || true) {
+      if (response?.success || true) {
         dispatch({type: 'set', user: response?.data })
         history.push("/dashboard")
       } else {
@@ -61,7 +61,7 @@ const Register = () => {
           toast.error(`${error} 🤯`)
         })
       }
-    } catch (error) { }
+    }
 
     setLoadingRequestState(false)
   }

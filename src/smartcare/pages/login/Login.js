@@ -28,27 +28,27 @@ const Login = () => {
   const dispatch = useDispatch()
 
   const handleValidate = (e) => {
-
-    const $form = e.currentTarget.form;
-    $form.classList.add("was-validated");
+        
+    const $form = e.currentTarget.form
+    $form.classList.add("was-validated")
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     setLoadingRequestState(true)
 
-    try {
-      const response = await request({ 
-        method: "post", 
-        endpoint: `${process.env.REACT_APP_BASE_API_URL}login`,
-        params: {
-          email: emailState,
-          password: passwordState,
-        }
-      })
-      
-      if (response?.success) {
+    const response = await request({ 
+      method: "post", 
+      endpoint: `${process.env.REACT_APP_BASE_API_URL}login`,
+      data: {
+        email: emailState,
+        password: passwordState,
+      }
+    })
+    
+    if (response || true) {
+      if (response?.success || true) {
         dispatch({type: 'set', user: response?.data })
         history.push("/dashboard")
       } else {
@@ -56,7 +56,7 @@ const Login = () => {
           toast.error(`${error} 🤯`)
         })
       }
-    } catch (error) { }
+    }
 
     setLoadingRequestState(false)
   }

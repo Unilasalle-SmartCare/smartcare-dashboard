@@ -1,9 +1,18 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
-export const request = ({ method, endpoint, params }) => {
+export const request = ({ method, endpoint, data }) => {
   
-  const response = axios[method](endpoint, params)
+  const config = {
+    method: (method || '').toLowerCase(),
+    url: endpoint
+  }
+  
+  if (data) {
+    config.data = data
+  }
+
+  const response = axios(config)
   
   toast.promise(
     response,
