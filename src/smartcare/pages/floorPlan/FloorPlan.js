@@ -20,7 +20,7 @@ const FloorPlan = () => {
   const [loadingRequestState, setLoadingRequestState] = useState(false)
   
   const dispatch = useDispatch()
-  const floorPlanSelector = useSelector(({ floorPlan }) => floorPlan || [])
+  const floorPlanSelector = useSelector(({ floorPlan }) => floorPlan)
 
   const handleRequest = async ({ method, value }) => {
     setModalVisibleState(false)
@@ -29,16 +29,21 @@ const FloorPlan = () => {
     const response = await request({ 
       method: method, 
       endpoint: `${process.env.REACT_APP_BASE_API_URL}floorPlan`,
-      params: {
+      data: {
         floorPlan: value,
       }
     })
+    
+    setLoadingRequestState(false)
 
     if (response || true) {
-      dispatch({ type: 'set', floorPlan: value })
+      if (response?.success || true) {
+        dispatch({ type: 'set', floorPlan: value })
+        return true
+      }
     }
 
-    setLoadingRequestState(false)
+    return false
   }
 
   const handleAction = ({ method, actionFn }) => {
@@ -47,7 +52,7 @@ const FloorPlan = () => {
       setModalVisibleState(true)
       REMOVE_FLOOR_PLAN.fn = actionFn
     } else {
-      actionFn();
+      actionFn()
     }
   }
   

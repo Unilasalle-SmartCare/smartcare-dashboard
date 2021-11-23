@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CButton } from '@coreui/react'
 import ImageUploading from 'react-images-uploading'
 import { toast } from 'react-toastify'
@@ -6,11 +6,15 @@ import './styles.scss'
 
 const InputImageUploading = ({ value, loadingRequest, handleAction, handleRequest }) => {
 
+  const [imageState, setImageState] = useState(value ? [{ data_url: value }] : undefined);
   const [methodState, setMethodState] = useState("POST")
 
-  const onChange = (imageList) => {
+  const onChange = async (imageList) => {
+    const response = await handleRequest({ method: methodState, value: imageList[0]?.data_url })
 
-    handleRequest({ method: methodState, value: imageList })
+    if (response) {
+      setImageState(imageList)
+    }
   }
 
   const onError = (errors) => {
@@ -29,7 +33,7 @@ const InputImageUploading = ({ value, loadingRequest, handleAction, handleReques
 
   return (
     <ImageUploading
-        value={value}
+        value={imageState}
         onChange={onChange}
         onError={onError}
         dataURLKey="data_url"
