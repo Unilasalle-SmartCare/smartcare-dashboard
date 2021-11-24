@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { CButton } from '@coreui/react'
 import ImageUploading from 'react-images-uploading'
 import { toast } from 'react-toastify'
