@@ -1,0 +1,23 @@
+.smtc-sensor {
+  .smtc-circle-ratation {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+    border-radius: 100%;
+    border: 2px solid #ced2d8;
+
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      top: 0;
+      left: 50%;
+      border-radius: 100%;
+      background: #ced2d8;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
