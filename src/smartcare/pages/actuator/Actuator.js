@@ -127,8 +127,7 @@ const Actuator = () => {
       method: methodSubmitState, 
       endpoint: `${process.env.REACT_APP_BASE_API_URL}active-actuator`,
       data: {
-        id: idState,
-        active: true
+        id: idState
       }
     })
     
