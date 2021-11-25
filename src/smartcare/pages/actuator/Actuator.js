@@ -22,6 +22,8 @@ import { request } from '../../services/request'
 
 const Actuator = () => {
 
+  const [readyState, setReadyState] = useState(true) // false 
+
   // Modals
   const [modalActionVisibleState, setModalActionVisibleState] = useState(false)
   const [modalDataVisibleState, setModalDataVisibleState] = useState(false)
@@ -37,6 +39,7 @@ const Actuator = () => {
   const [alertMessageState, setAlertMessageState] = useState("")
   
   const [loadingRequestState, setLoadingRequestState] = useState(false)
+  const [requestResponse, setRequestResponse] = useState()
   const dispatch = useDispatch()
   const actuatorsSelector = useSelector(({ actuators }) => actuators || [])
   
@@ -80,7 +83,7 @@ const Actuator = () => {
 
     const response = await request({ 
       method: methodSubmitState, 
-      endpoint: `${process.env.REACT_APP_BASE_API_URL}actuator`,
+      endpoint: `${process.env.REACT_APP_BASE_API_URL}actuators`,
       data: sendData
     })
     
@@ -105,7 +108,7 @@ const Actuator = () => {
             break;
         }
 
-        dispatch({type: 'set', actuators: responseFake })
+        setRequestResponse(response?.data?.actuators ?? responseFake)
       } else {
         (response?.errors || []).foreach(error => {
           toast.error(`${error} 🤯`)
@@ -149,22 +152,51 @@ const Actuator = () => {
     // Reset fields
     if (!(modalActionVisibleState || modalDataVisibleState || modalDeleteVisibleState || modalTriggerVisibleState)) {
       setMethodSubmitState("post")
-      setIdState(undefined)
+      setIdState()
       setNameState("")
-      setCoordinateState(undefined)
+      setCoordinateState()
       setAlertState(false)
       setAlertMessageState("")
     }
   }, [modalActionVisibleState, modalDataVisibleState, modalDeleteVisibleState, modalTriggerVisibleState])
 
+  useEffect(() => {
+    const load = async () => {
+      const response = await request({ 
+        method: "get", 
+        endpoint: `${process.env.REACT_APP_BASE_API_URL}actuators`
+      })
+  
+      if (response || true) {
+        if (response?.success || true) {
+          setRequestResponse(response?.data?.actuators)
+        } else {
+          (response?.errors || []).foreach(error => {
+            toast.error(`${error} 🤯`)
+          })
+        }
+      }
+      
+      setReadyState(true)
+    }
+
+    load()
+  }, [])
+
+  useEffect(() =>  {
+    dispatch({ type: 'set', actuators: requestResponse })
+  }, [requestResponse, dispatch])
+
   return (
     <div className="smtc-actuator">
       <div className="smtc-actuator-wrapper">
         <div className="smtc-actuator-body">
-          <Canvas
-            data={actuatorsSelector}
-            callbackCoordinate={handleActuator}
-          />
+          {readyState && 
+            <Canvas
+              data={actuatorsSelector}
+              callbackCoordinate={handleActuator}
+            />
+          }
         </div>
       </div>
       <CModal centered={true} show={modalDataVisibleState} onClose={() => {

@@ -44,7 +44,7 @@ const Register = () => {
 
     const response = await request({ 
       method: "post", 
-      endpoint: `${process.env.REACT_APP_BASE_API_URL}register`,
+      endpoint: `${process.env.REACT_APP_BASE_API_URL}user`,
       data: {
         username: usernameState,
         email: emailState,

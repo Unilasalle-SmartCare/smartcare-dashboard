@@ -24,6 +24,8 @@ import { request } from '../../services/request'
 
 const Sensor = () => {
 
+  const [readyState, setReadyState] = useState(true) // false
+
   // Modals
   const [modalActionVisibleState, setModalActionVisibleState] = useState(false)
   const [modalDataVisibleState, setModalDataVisibleState] = useState(false)
@@ -42,6 +44,8 @@ const Sensor = () => {
   const [alertRangeState, setAlertRangeState] = useState(0)
   
   const [loadingRequestState, setLoadingRequestState] = useState(false)
+
+  const [requestResponse, setRequestResponse] = useState()
   const dispatch = useDispatch()
   const sensorsSelector = useSelector(({ sensors }) => sensors || [])
   
@@ -97,7 +101,7 @@ const Sensor = () => {
 
     const response = await request({ 
       method: methodSubmitState, 
-      endpoint: `${process.env.REACT_APP_BASE_API_URL}sensor`,
+      endpoint: `${process.env.REACT_APP_BASE_API_URL}sensors`,
       data: sendData
     })
     
@@ -122,7 +126,7 @@ const Sensor = () => {
             break;
         }
 
-        dispatch({type: 'set', sensors: responseFake })
+        setRequestResponse(response?.data?.sensors ?? responseFake)
       } else {
         (response?.errors || []).foreach(error => {
           toast.error(`${error} 🤯`)
@@ -151,14 +155,43 @@ const Sensor = () => {
     }
   }, [modalActionVisibleState, modalDataVisibleState, modalDeleteVisibleState])
 
+  useEffect(() => {
+    const load = async () => {
+      const response = await request({ 
+        method: "get", 
+        endpoint: `${process.env.REACT_APP_BASE_API_URL}sensors`
+      })
+  
+      if (response || true) {
+        if (response?.success || true) {
+          setRequestResponse(response?.data?.sensors)
+        } else {
+          (response?.errors || []).foreach(error => {
+            toast.error(`${error} 🤯`)
+          })
+        }
+      }
+      
+      setReadyState(true)
+    }
+
+    load()
+  }, [])
+
+  useEffect(() =>  {
+    dispatch({ type: 'set', sensors: requestResponse })
+  }, [requestResponse, dispatch])
+
   return (
     <div className="smtc-sensor">
       <div className="smtc-sensor-wrapper">
         <div className="smtc-sensor-body">
-          <Canvas
-            data={sensorsSelector}
-            callbackCoordinate={handleSensor}
-          />
+          {readyState && 
+            <Canvas
+              data={sensorsSelector}
+              callbackCoordinate={handleSensor}
+            />
+          }
         </div>
       </div>
       <CModal centered={true} show={modalDataVisibleState} onClose={() => {

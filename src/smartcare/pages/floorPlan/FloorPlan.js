@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CButton,
   CModal,
@@ -8,6 +8,7 @@ import {
   CModalFooter,
 } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import './styles.scss'
 import { request } from '../../services/request'
 import InputImageUploading from '../../components/inputImageUploading/InputImageUploading'
@@ -16,10 +17,13 @@ const REMOVE_FLOOR_PLAN = {}
 
 const FloorPlan = () => {
 
+  const [readyState, setReadyState] = useState(true) // false
+  
   const [modalVisibleState, setModalVisibleState] = useState(false)
   const [loadingRequestState, setLoadingRequestState] = useState(false)
   const [methodSubmitState, setMethodSubmitState] = useState("post")
   
+  const [requestResponse, setRequestResponse] = useState()
   const dispatch = useDispatch()
   const floorPlanSelector = useSelector(({ floorPlan }) => floorPlan)
 
@@ -39,7 +43,11 @@ const FloorPlan = () => {
     
     if (response || true) {
       if (response?.success || true) {
-        dispatch({ type: 'set', floorPlan: value })
+        setRequestResponse(response?.data?.floorPlan ?? value)
+      } else {
+        (response?.errors || []).foreach(error => {
+          toast.error(`${error} 🤯`)
+        })
       }
     }
   }
@@ -57,17 +65,46 @@ const FloorPlan = () => {
       }
     }
   }
+
+  useEffect(() => {
+    const load = async () => {
+      const response = await request({ 
+        method: "get", 
+        endpoint: `${process.env.REACT_APP_BASE_API_URL}floorPlan`
+      })
+  
+      if (response || true) {
+        if (response?.success || true) {
+          setRequestResponse(response?.data?.floorPlan)
+        } else {
+          (response?.errors || []).foreach(error => {
+            toast.error(`${error} 🤯`)
+          })
+        }
+      }
+      
+      setReadyState(true)
+    }
+
+    load()
+  }, [])
+
+  useEffect(() =>  {
+    dispatch({ type: 'set', floorPlan: requestResponse })
+  }, [requestResponse, dispatch])
   
   return (
     <div className="smtc-floor-plan">
       <div className="smtc-floor-plan-wrapper">
         <div className="smtc-floor-plan-header">
-          <InputImageUploading
-            value={floorPlanSelector}
-            handleAction={handleAction}
-            handleRequest={handleRequest}
-            loadingRequest={loadingRequestState}
-          />
+          {readyState && 
+            <InputImageUploading
+              value={floorPlanSelector}
+              handleAction={handleAction}
+              handleRequest={handleRequest}
+              loadingRequest={loadingRequestState}
+            />
+          }
         </div>
       </div>
       <CModal centered={true} show={modalVisibleState} onClose={() => setModalVisibleState(false)}>
