@@ -18,16 +18,16 @@ const FloorPlan = () => {
 
   const [modalVisibleState, setModalVisibleState] = useState(false)
   const [loadingRequestState, setLoadingRequestState] = useState(false)
+  const [methodSubmitState, setMethodSubmitState] = useState("post")
   
   const dispatch = useDispatch()
   const floorPlanSelector = useSelector(({ floorPlan }) => floorPlan)
 
-  const handleRequest = async ({ method, value }) => {
-    setModalVisibleState(false)
+  const handleRequest = async (value) => {
     setLoadingRequestState(true)
 
     const response = await request({ 
-      method: method, 
+      method: value ? methodSubmitState : "delete", 
       endpoint: `${process.env.REACT_APP_BASE_API_URL}floorPlan`,
       data: {
         floorPlan: value,
@@ -35,24 +35,26 @@ const FloorPlan = () => {
     })
     
     setLoadingRequestState(false)
-
+    setModalVisibleState(false)
+    
     if (response || true) {
       if (response?.success || true) {
         dispatch({ type: 'set', floorPlan: value })
-        return true
       }
     }
-
-    return false
   }
 
-  const handleAction = ({ method, actionFn }) => {
+  const handleAction = (action) => {
+    
+    if (action) {
+      setMethodSubmitState(action.method)
 
-    if (method === "DELETE") {
-      setModalVisibleState(true)
-      REMOVE_FLOOR_PLAN.fn = actionFn
-    } else {
-      actionFn()
+      if (action.method === "delete") {
+        setModalVisibleState(true)
+        REMOVE_FLOOR_PLAN.fn = action.handleFn
+      } else {
+        action.handleFn()
+      }
     }
   }
   
@@ -79,7 +81,7 @@ const FloorPlan = () => {
           <CButton color="secondary" onClick={() => setModalVisibleState(false)}>
             Fechar
           </CButton>
-          <CButton color="primary" onClick={REMOVE_FLOOR_PLAN.fn}>Confirmar</CButton>
+          <CButton color="primary" className={`${loadingRequestState ? "loading" : ""}`} onClick={() => REMOVE_FLOOR_PLAN.fn()}>Confirmar</CButton>
         </CModalFooter>
       </CModal>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CButton } from '@coreui/react'
 import ImageUploading from 'react-images-uploading'
 import { toast } from 'react-toastify'
@@ -6,15 +6,10 @@ import './styles.scss'
 
 const InputImageUploading = ({ value, loadingRequest, handleAction, handleRequest }) => {
 
-  const [imageState, setImageState] = useState(value ? [{ data_url: value }] : undefined);
-  const [methodState, setMethodState] = useState("POST")
+  const [imageState, setImageState] = useState(value ? [value] : [])
 
-  const onChange = async (imageList) => {
-    const response = await handleRequest({ method: methodState, value: imageList[0]?.data_url })
-
-    if (response) {
-      setImageState(imageList)
-    }
+  const onChange = (imageList) => {
+    handleRequest(imageList[0]?.data_url)
   }
 
   const onError = (errors) => {
@@ -25,11 +20,13 @@ const InputImageUploading = ({ value, loadingRequest, handleAction, handleReques
     errors?.resolution && toast.error("O arquivo selecionado não corresponde à resolução desejada.")
   }
 
-  const handleClick = ({ method, actionFn }) => {
-
-    setMethodState(method)
-    handleAction({ method, actionFn })
+  const handleClick = (action) => {
+    handleAction(action)
   }
+
+  useEffect(() => {
+    setImageState(value ? [value] : [])
+  }, [value])
 
   return (
     <ImageUploading
@@ -45,20 +42,25 @@ const InputImageUploading = ({ value, loadingRequest, handleAction, handleReques
           onImageUpdate,
           onImageRemove,
         }) => (
-          // write your building UI
           <div className="upload__image-wrapper">
-            {!imageList.length && <CButton color="primary" onClick={() => handleClick({ method: "POST", actionFn: () => onImageUpload() }) } disabled={loadingRequest}>Cadastrar</CButton>}
-            {imageList.map((image, index) => (
+            {!imageList.length && (
+              <CButton 
+                color="primary" 
+                onClick={() => handleClick({ method: "post", handleFn: onImageUpload }) } 
+                className={`${loadingRequest ? "loading" : ""}`} 
+                disabled={loadingRequest}>Cadastrar</CButton>
+            )}
+            {imageList.map((image, index) => 
               <div key={index} className="image-item">
                 <div className="image-wrapper">
-                  <img src={image['data_url']} alt="" />
+                  <img src={imageState[index]} alt="" />
                 </div>
                 <div className="image-item__btn-wrapper">
-                  <CButton color="warning" onClick={() => handleClick({ method: "PUT", actionFn: () => onImageUpdate(index) }) } disabled={loadingRequest}>Atualizar</CButton>
-                  <CButton color="danger" onClick={() => handleClick({ method: "DELETE", actionFn: () => onImageRemove(index) }) } disabled={loadingRequest}>Remover</CButton>
+                  <CButton color="warning" onClick={() => handleClick({ method: "put", handleFn: () => onImageUpdate(index) }) } disabled={loadingRequest}>Atualizar</CButton>
+                  <CButton color="danger" onClick={() => handleClick({ method: "delete", handleFn: () => onImageRemove(index) }) } disabled={loadingRequest}>Remover</CButton>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         )}
       </ImageUploading>
