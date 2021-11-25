@@ -1,0 +1,24 @@
+.smtc-input-range {  
+  .smtc-input-range-wrapper {
+    padding: 12px 0;
+  }
+
+  .input-range__label {
+    font-family: inherit;
+    color: var(--color);
+
+    &.input-range__label--min,
+    &.input-range__label--max {
+      display: none;
+    }
+  }
+
+  .input-range__track--active {
+    background: var(--primary);
+  }
+
+  .input-range__slider {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+}
