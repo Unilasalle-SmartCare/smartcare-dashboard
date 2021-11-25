@@ -260,7 +260,7 @@ const Actuator = () => {
             setModalActionVisibleState(true)
             setModalDeleteVisibleState(false)
           }}>
-            Fechar
+            Voltar
           </CButton>
           <CButton color="primary" type="button" className={`${loadingRequestState ? "loading" : ""}`} disabled={loadingRequestState} onClick={handleSubmit}>Confirmar</CButton>
         </CModalFooter>
@@ -277,7 +277,7 @@ const Actuator = () => {
             setModalActionVisibleState(true)
             setModalTriggerVisibleState(false)
           }}>
-            Fechar
+            Voltar
           </CButton>
           <CButton color="primary" type="button" className={`${loadingRequestState ? "loading" : ""}`} disabled={loadingRequestState} onClick={handleActive}>Confirmar</CButton>
         </CModalFooter>

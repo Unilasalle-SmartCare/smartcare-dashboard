@@ -331,7 +331,7 @@ const Sensor = () => {
             setModalActionVisibleState(true)
             setModalDeleteVisibleState(false)
           }}>
-            Fechar
+            Voltar
           </CButton>
           <CButton color="primary" type="button" className={`${loadingRequestState ? "loading" : ""}`} disabled={loadingRequestState} onClick={handleSubmit}>Confirmar</CButton>
         </CModalFooter>
