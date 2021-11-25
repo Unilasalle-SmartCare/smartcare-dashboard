@@ -90,7 +90,7 @@ const Canvas = ({ data, callbackCoordinate }) => {
       
       ctx.save()
       ctx.translate(x, y)
-      ctx.rotate(item.rotate * Math.PI / 180)
+      ctx.rotate((item.direction || 0) * Math.PI / 180)
       ctx.translate(-centerSize, -centerSize)
       
       switch (item.type) {
@@ -140,9 +140,11 @@ const Canvas = ({ data, callbackCoordinate }) => {
       percentY >= (item?.percentY - offsetSizeHeightPercent) &&
       percentY <= (item?.percentY + offsetSizeHeightPercent)
     )) {
-
       callbackCoordinate({ ...item, ...{ x, y, percentX, percentY, width, height } })
+    } else {
+      callbackCoordinate({ ...item })
     }
+
   }, [itemState, callbackCoordinate, helperResponsiveSize, helperResponseCoordinate])
 
   const handleItemDown = useCallback((e) => {
@@ -191,7 +193,7 @@ const Canvas = ({ data, callbackCoordinate }) => {
   }, [handleItemClick])
 
   useEffect(() => {
-    if (refCanvas.current && data) {
+    if (refCanvas.current) {
       const canvas = refCanvas.current
       
       canvas.addEventListener('click', handleItemClick)
@@ -201,8 +203,6 @@ const Canvas = ({ data, callbackCoordinate }) => {
       canvas.addEventListener('touchstart', handleItemDown)
       window.addEventListener('touchmove', handleItemMove)
       window.addEventListener('touchend', handleItemUp)
-      
-      drawData(data)
       
       return (() => {
         canvas.removeEventListener('click', handleItemClick)
@@ -214,7 +214,13 @@ const Canvas = ({ data, callbackCoordinate }) => {
         window.removeEventListener('touchend', handleItemUp)
       })
     }
-  }, [data, drawData, handleItemClick, handleItemDown, handleItemMove, handleItemUp])
+  }, [handleItemClick, handleItemDown, handleItemMove, handleItemUp])
+
+  useEffect(() => {
+    if (refCanvas.current && data) {
+      drawData(data)
+    }
+  }, [data, drawData])
 
   return (
     <div className="smtc-canvas">
