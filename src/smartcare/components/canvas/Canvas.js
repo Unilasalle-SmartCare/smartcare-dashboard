@@ -95,15 +95,17 @@ const Canvas = ({ data, callbackCoordinate }) => {
       
       switch (item.type) {
         case "distance":  
-          const gradient = ctx.createLinearGradient(0, fixSize, 0, 0)
-          gradient.addColorStop(0.5, "red")
-          gradient.addColorStop(1, "transparent")
-    
+
           ctx.beginPath()
-          ctx.moveTo(0, 0)
-          ctx.lineTo(centerSize, fixSize)
-          ctx.lineTo(fixSize, 0)
-          ctx.fillStyle = gradient
+          ctx.arc(centerSize, centerSize, centerSize, 0, 2 * Math.PI)
+          ctx.fillStyle = "red"
+          ctx.fill()
+
+          ctx.beginPath()
+          ctx.moveTo(centerSize, -(centerSize / 2))
+          ctx.lineTo(0, centerSize)
+          ctx.lineTo(fixSize, centerSize)
+          ctx.fillStyle = "red"
           ctx.fill()
           break
         case "presence":
