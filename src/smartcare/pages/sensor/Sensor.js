@@ -122,8 +122,6 @@ const Sensor = () => {
             break;
         }
 
-        console.log(responseFake)
-
         dispatch({type: 'set', sensors: responseFake })
       } else {
         (response?.errors || []).foreach(error => {
@@ -321,10 +319,7 @@ const Sensor = () => {
           }}>Deletar</CButton>
         </CModalFooter>
       </CModal>
-      <CModal centered={true} show={modalDeleteVisibleState} onClose={() => {
-        setModalActionVisibleState(true)
-        setModalDeleteVisibleState(false)
-      }}>
+      <CModal centered={true} show={modalDeleteVisibleState} onClose={() => setModalDeleteVisibleState(false)}>
         <CModalHeader>
           <CModalTitle>Tem certeza?</CModalTitle>
         </CModalHeader>
