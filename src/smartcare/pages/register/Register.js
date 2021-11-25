@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import {
   CButton,
@@ -29,6 +29,7 @@ const Register = () => {
   const [loadingRequestState, setLoadingRequestState] = useState(false)
   const history = useHistory()
   const dispatch = useDispatch()
+  const userSelector = useSelector(({ user }) => user)
 
   const handleValidate = (e) => {
 
@@ -55,7 +56,6 @@ const Register = () => {
     if (response || true) {
       if (response?.success || true) {
         dispatch({type: 'set', user: response?.data })
-        history.push("/dashboard")
       } else {
         (response?.errors || []).foreach(error => {
           toast.error(`${error} 🤯`)
@@ -65,6 +65,12 @@ const Register = () => {
 
     setLoadingRequestState(false)
   }
+
+  useEffect(() => {
+    if (userSelector) {
+      history.push("/dashboard")
+    }
+  }, [userSelector, history])
 
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
