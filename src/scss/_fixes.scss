@@ -8,6 +8,11 @@ button {
   }
 }
 
+// todo: overflow hidden
+.modal-content {
+  overflow: hidden;
+}
+
 // todo: brand button icon margin
 .btn-brand:not(:only-child) {
   .c-icon {
