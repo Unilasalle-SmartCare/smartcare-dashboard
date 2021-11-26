@@ -36,5 +36,11 @@ export const routes = [
     name: 'Atuadores',
     to: '/dashboard/actuator',
     // icon: " ",
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Paciente',
+    to: '/dashboard/patient',
+    // icon: " ",
   }
 ]

@@ -44,6 +44,7 @@ const Monitoring = React.lazy(() => import('./smartcare/pages/monitoring/Monitor
 const FloorPlan = React.lazy(() => import('./smartcare/pages/floorPlan/FloorPlan'));
 const Sensor = React.lazy(() => import('./smartcare/pages/sensor/Sensor'));
 const Actuator = React.lazy(() => import('./smartcare/pages/actuator/Actuator'));
+const Patient = React.lazy(() => import('./smartcare/pages/patient/Patient'));
 // / SmartCare
 
 const routes = [
@@ -93,6 +94,7 @@ const routes = [
   { path: '/dashboard/floor_plan', name: 'Floor Plan', component: FloorPlan },
   { path: '/dashboard/sensor', name: 'Sensor', component: Sensor },
   { path: '/dashboard/actuator', name: 'Actuator', component: Actuator },
+  { path: '/dashboard/patient', name: 'Patient', component: Patient },
   // / SmartCare
 ];
 
