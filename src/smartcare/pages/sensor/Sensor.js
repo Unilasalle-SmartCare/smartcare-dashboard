@@ -190,6 +190,7 @@ const Sensor = () => {
             <Canvas
               data={sensorsSelector}
               callbackCoordinate={handleSensor}
+              resetDraw={!(modalActionVisibleState || modalDataVisibleState || modalDeleteVisibleState)}
             />
           }
         </div>

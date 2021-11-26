@@ -195,6 +195,7 @@ const Actuator = () => {
             <Canvas
               data={actuatorsSelector}
               callbackCoordinate={handleActuator}
+              resetDraw={!(modalActionVisibleState || modalDataVisibleState || modalDeleteVisibleState || modalTriggerVisibleState)}
             />
           }
         </div>

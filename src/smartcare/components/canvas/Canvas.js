@@ -6,7 +6,7 @@ import { useDimension } from '../../hooks/useDimension'
 const SIZE_ITEM_MIN = 10
 const SIZE_ITEM_MAX = 20
 
-const Canvas = ({ data, callbackCoordinate }) => {
+const Canvas = ({ data, callbackCoordinate, resetDraw }) => {
 
   const refCanvas = useRef()
   const refFloorPlan = useRef()
@@ -219,10 +219,10 @@ const Canvas = ({ data, callbackCoordinate }) => {
   }, [handleItemClick, handleItemDown, handleItemMove, handleItemUp])
 
   useEffect(() => {
-    if (refCanvas.current && data) {
+    if (refCanvas.current && data && resetDraw) {
       drawData(data)
     }
-  }, [data, drawData])
+  }, [data, drawData, resetDraw])
 
   return (
     <div className="smtc-canvas">
