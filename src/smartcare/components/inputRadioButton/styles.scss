@@ -1,25 +1,31 @@
 .smtc-input-radio-button {
-  > div > div {
-    color: var(--color) !important;
-    border-color: #ced2d8 !important;
+  > div {
+    flex-wrap: wrap;
+    margin: -4px !important;
 
     > div {
-      align-items: center;
+      color: var(--color) !important;
+      border-color: #ced2d8 !important;
+      margin: 4px !important;
   
       > div {
-  
-        + div {
-          position: relative;
-          border-color: var(--primary) !important;
-  
-          > div {
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            background: var(--primary) !important;
+        align-items: center;
+    
+        > div {
+    
+          + div {
+            position: relative;
+            border-color: var(--primary) !important;
+    
+            > div {
+              position: absolute;
+              top: -2px;
+              left: -2px;
+              background: var(--primary) !important;
+            }
           }
         }
-      }
+      } 
     } 
   }
 }

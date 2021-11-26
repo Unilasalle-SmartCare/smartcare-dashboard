@@ -35,6 +35,7 @@ const Sensor = () => {
   const [methodSubmitState, setMethodSubmitState] = useState("post")
   const [idState, setIdState] = useState()
   const [typeState, setTypeState] = useState("distance") // distance, presence
+  const [codeState, setCodeState] = useState("")
   const [nameState, setNameState] = useState("")
   const [directionState, setDirectionState] = useState(0) // for top
   const [wallDistanceState, setWallDistanceState] = useState(0)
@@ -64,6 +65,7 @@ const Sensor = () => {
     if (sensor.id >= 0) {
       setIdState(sensor.id)
       setTypeState(sensor.type)
+      setCodeState(sensor.code)
       setNameState(sensor.name)
       setDirectionState(sensor.direction)
       setWallDistanceState(sensor.wallDistance)
@@ -89,6 +91,7 @@ const Sensor = () => {
     }
 
     sendData.type = typeState
+    sendData.code = codeState
     sendData.name = nameState
     
     if (typeState === "distance") {
@@ -146,6 +149,7 @@ const Sensor = () => {
       setMethodSubmitState("post")
       setIdState(undefined)
       setTypeState("distance")
+      setCodeState("")
       setNameState("")
       setDirectionState(0)
       setWallDistanceState(0)
@@ -218,6 +222,14 @@ const Sensor = () => {
                       value: "presence"
                     }]}
                   />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3 align-items-center">
+                <CCol className="col-12">
+                  <CLabel htmlFor="create-code">Código</CLabel>
+                </CCol>
+                <CCol className="col-12">
+                  <CInput type="text" placeholder="Código" id="create-code" onChange={({ target: { value } }) => setCodeState(value) } value={codeState} required />
                 </CCol>
               </CRow>
               <CRow className="mb-3 align-items-center">
@@ -324,7 +336,7 @@ const Sensor = () => {
                 }
                 setModalDataVisibleState(false)
               }}>
-                Cancelar
+                {methodSubmitState === "put" ? "Voltar" : "Cancelar"}
               </CButton>
               <CButton type="submit" color="primary" className={`${loadingRequestState ? "loading" : ""}`} disabled={loadingRequestState}>
                 {methodSubmitState === "put" ? "Atualizar" : "Adicionar"}

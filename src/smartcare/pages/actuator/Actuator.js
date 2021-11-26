@@ -7,7 +7,6 @@ import {
   CForm,
   CLabel,
   CInput,
-  CTextarea,
   CModalHeader,
   CModalTitle,
   CModalBody,
@@ -17,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import './styles.scss'
 import Canvas from '../../components/canvas/Canvas'
-import InputSwitch from '../../components/inputSwitch/InputSwitch'
+import InputRadioButton from '../../components/inputRadioButton/InputRadioButton'
 import { request } from '../../services/request'
 
 const Actuator = () => {
@@ -33,10 +32,10 @@ const Actuator = () => {
   // Fields
   const [methodSubmitState, setMethodSubmitState] = useState("post")
   const [idState, setIdState] = useState()
+  const [typeState, setTypeState] = useState("luz")
+  const [codeState, setCodeState] = useState("")
   const [nameState, setNameState] = useState("")
   const [coordinateState, setCoordinateState] = useState() // { x, y, percentX, percentY, width, height }
-  const [alertState, setAlertState] = useState(false)
-  const [alertMessageState, setAlertMessageState] = useState("")
   
   const [loadingRequestState, setLoadingRequestState] = useState(false)
   const dispatch = useDispatch()
@@ -57,9 +56,9 @@ const Actuator = () => {
       
     if (actuator.id >= 0) {
       setIdState(actuator.id)
+      setTypeState(actuator.type)
+      setCodeState(actuator.code)
       setNameState(actuator.name)
-      setAlertState(actuator.alert)
-      setAlertMessageState(actuator.alertMessage)
       setModalActionVisibleState(true)
     } else {
       setMethodSubmitState("post")
@@ -78,9 +77,9 @@ const Actuator = () => {
       sendData.id = idState
     }
 
+    sendData.type = typeState
+    sendData.code = codeState
     sendData.name = nameState
-    sendData.alert = alertState
-    sendData.alertMessage = alertMessageState
 
     const response = await request({ 
       method: methodSubmitState, 
@@ -129,15 +128,16 @@ const Actuator = () => {
 
     const response = await request({ 
       method: methodSubmitState, 
-      endpoint: `${process.env.REACT_APP_BASE_API_URL}active-actuator`,
+      endpoint: `${process.env.REACT_APP_BASE_API_URL}actuator-active`,
       data: {
-        id: idState
+        id: idState,
+        code: codeState
       }
     })
     
     if (response || true) {
       if (response?.success || true) {
-        toast.error("Atuador acionado com sucesso! 👌")
+        toast.success("Atuador acionado com sucesso! 👌")
       } else {
         (response?.errors || []).foreach(error => {
           toast.error(`${error} 🤯`)
@@ -154,10 +154,10 @@ const Actuator = () => {
     if (!(modalActionVisibleState || modalDataVisibleState || modalDeleteVisibleState || modalTriggerVisibleState)) {
       setMethodSubmitState("post")
       setIdState()
+      setTypeState("luz")
+      setCodeState("")
       setNameState("")
       setCoordinateState()
-      setAlertState(false)
-      setAlertMessageState("")
     }
   }, [modalActionVisibleState, modalDataVisibleState, modalDeleteVisibleState, modalTriggerVisibleState])
 
@@ -207,36 +207,44 @@ const Actuator = () => {
         }}>
           <CForm onSubmit={handleSubmit}>
             <CModalHeader>
-              <CModalTitle>Informe os dados do sensor!</CModalTitle>
+              <CModalTitle>Informe os dados do atuador!</CModalTitle>
             </CModalHeader>
             <CModalBody>
+              <CRow className="mb-3">
+                <CCol sm="12">
+                  <InputRadioButton
+                    value={typeState}
+                    onChange={setTypeState}
+                    items={[{
+                      label: "Luz",
+                      value: "luz"
+                    }, {
+                      label: "Aroma",
+                      value: "aroma"
+                    }, {
+                      label: "Som",
+                      value: "som"
+                    }, {
+                      label: "Mídia",
+                      value: "midia"
+                    }]}
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3 align-items-center">
+                <CCol className="col-12">
+                  <CLabel htmlFor="create-code">Código</CLabel>
+                </CCol>
+                <CCol className="col-12">
+                  <CInput type="text" placeholder="Código" id="create-code" onChange={({ target: { value } }) => setCodeState(value) } value={codeState} required />
+                </CCol>
+              </CRow>
               <CRow className="mb-3 align-items-center">
                 <CCol className="col-12">
                   <CLabel htmlFor="create-name">Nome</CLabel>
                 </CCol>
                 <CCol className="col-12">
                   <CInput type="text" placeholder="Nome" id="create-name" onChange={({ target: { value } }) => setNameState(value) } value={nameState} required />
-                </CCol>
-              </CRow>
-              <hr />
-              <CRow className="mb-3 align-items-center">
-                <CCol className="col-2">
-                  <CLabel htmlFor="create-alert">Alerta</CLabel>
-                </CCol>
-                <CCol className="col-8">
-                  <InputSwitch
-                    id="create-alert"
-                    checked={alertState}
-                    onChange={setAlertState}
-                  />
-                </CCol>
-              </CRow>
-              <CRow className="mb-3">
-                <CCol className="col-12">
-                  <CLabel htmlFor="create-message">Mensagem</CLabel>
-                </CCol>
-                <CCol className="col-12">
-                  <CTextarea placeholder="Mensagem" id="create-message" onChange={({ target: { value } }) => setAlertMessageState(value) } value={alertMessageState} rows="3"></CTextarea>
                 </CCol>
               </CRow>
             </CModalBody>
@@ -247,7 +255,7 @@ const Actuator = () => {
                 }
                 setModalDataVisibleState(false)
               }}>
-                Cancelar
+                {methodSubmitState === "put" ? "Voltar" : "Cancelar"}
               </CButton>
               <CButton type="submit" color="primary" className={`${loadingRequestState ? "loading" : ""}`} disabled={loadingRequestState}>
                 {methodSubmitState === "put" ? "Atualizar" : "Adicionar"}
@@ -288,7 +296,7 @@ const Actuator = () => {
             <CModalTitle>Tem certeza?</CModalTitle>
           </CModalHeader>
           <CModalBody>
-            Ao confirmar a ação, o sensor será excluído do sistema.
+            Ao confirmar a ação, o atuador será excluído do sistema.
           </CModalBody>
           <CModalFooter>
             <CButton type="button" color="secondary" onClick={() => {
@@ -305,7 +313,7 @@ const Actuator = () => {
             <CModalTitle>Tem certeza?</CModalTitle>
           </CModalHeader>
           <CModalBody>
-            Ao confirmar a ação, o sensor será ativado na residência.
+            Ao confirmar a ação, o atuador será ativado na residência.
           </CModalBody>
           <CModalFooter>
             <CButton type="button" color="secondary" onClick={() => {

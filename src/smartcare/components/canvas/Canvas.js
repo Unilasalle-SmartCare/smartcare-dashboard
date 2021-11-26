@@ -127,35 +127,38 @@ const Canvas = ({ data, floorPlan, callbackCoordinate, resetDraw }) => {
 
   const handleItemClick = useCallback((e) => {
 
-    const { x, y, percentX, percentY, width, height } = helperResponseCoordinate(e)
-    const [item] = itemState
-    
-    const offsetSize = helperResponsiveSize()
-    const offsetSizeWidthPercent = ((offsetSize / width) / 2)
-    const offsetSizeHeightPercent = ((offsetSize / height) / 2)
-
-    if (!(
-      percentX >= (item?.percentX - offsetSizeWidthPercent) &&
-      percentX <= (item?.percentX + offsetSizeWidthPercent) &&
-      percentY >= (item?.percentY - offsetSizeHeightPercent) &&
-      percentY <= (item?.percentY + offsetSizeHeightPercent)
-    )) {
-      callbackCoordinate({ ...item, ...{ x, y, percentX, percentY, width, height } })
-    } else {
-      callbackCoordinate({ ...item })
+    if (pressState) {
+      const { x, y, percentX, percentY, width, height } = helperResponseCoordinate(e)
+      const [item] = itemState
+      
+      const offsetSize = helperResponsiveSize()
+      const offsetSizeWidthPercent = ((offsetSize / width) / 2)
+      const offsetSizeHeightPercent = ((offsetSize / height) / 2)
+  
+      if (!(
+        percentX >= (item?.percentX - offsetSizeWidthPercent) &&
+        percentX <= (item?.percentX + offsetSizeWidthPercent) &&
+        percentY >= (item?.percentY - offsetSizeHeightPercent) &&
+        percentY <= (item?.percentY + offsetSizeHeightPercent)
+      )) {
+        callbackCoordinate({ ...item, ...{ x, y, percentX, percentY, width, height } })
+      } else {
+        callbackCoordinate({ ...item })
+      }
     }
 
-  }, [itemState, callbackCoordinate, helperResponsiveSize, helperResponseCoordinate])
+    setPressState(false)
+
+
+  }, [itemState, pressState, callbackCoordinate, helperResponsiveSize, helperResponseCoordinate])
 
   const handleItemDown = useCallback((e) => {
-
     const find = helperFindItem(e)
     setItemState(find)
     setPressState(true)
   }, [helperFindItem])
   
   const handleItemMove = useCallback((e) => {
-
     const { x, y, percentX, percentY } = helperResponseCoordinate(e)
     const canvas = refCanvas.current
     const [item] = itemState
@@ -185,8 +188,6 @@ const Canvas = ({ data, floorPlan, callbackCoordinate, resetDraw }) => {
   }, [data, itemState, pressState, helperResponseCoordinate, helperFindItem, drawData])
 
   const handleItemUp = useCallback((e) => {
-
-    setPressState(false)
     if (e.changedTouches && e.changedTouches.length) {
       handleItemClick(e)
     }
