@@ -45,10 +45,10 @@ const Sensor = () => {
   
   const [loadingRequestState, setLoadingRequestState] = useState(false)
 
-  const [requestResponse, setRequestResponse] = useState()
   const dispatch = useDispatch()
   const floorPlanSelector = useSelector(({ floorPlan }) => floorPlan)
   const sensorsSelector = useSelector(({ sensors }) => sensors || [])
+  const [requestResponse, setRequestResponse] = useState(sensorsSelector)
   
   const handleSensor = ( sensor ) => {
     
@@ -156,28 +156,28 @@ const Sensor = () => {
     }
   }, [modalActionVisibleState, modalDataVisibleState, modalDeleteVisibleState])
 
-  useEffect(() => {
-    const load = async () => {
-      const response = await request({ 
-        method: "get", 
-        endpoint: `${process.env.REACT_APP_BASE_API_URL}sensors`
-      })
+  // useEffect(() => {
+  //   const load = async () => {
+  //     const response = await request({ 
+  //       method: "get", 
+  //       endpoint: `${process.env.REACT_APP_BASE_API_URL}sensors`
+  //     })
   
-      if (response || true) {
-        if (response?.success || true) {
-          setRequestResponse(response?.data?.sensors)
-        } else {
-          (response?.errors || []).foreach(error => {
-            toast.error(`${error} 🤯`)
-          })
-        }
-      }
+  //     if (response || true) {
+  //       if (response?.success || true) {
+  //         setRequestResponse(response?.data?.sensors)
+  //       } else {
+  //         (response?.errors || []).foreach(error => {
+  //           toast.error(`${error} 🤯`)
+  //         })
+  //       }
+  //     }
       
-      setReadyState(true)
-    }
+  //     setReadyState(true)
+  //   }
 
-    load()
-  }, [])
+  //   load()
+  // }, [])
 
   useEffect(() =>  {
     dispatch({ type: 'set', sensors: requestResponse })

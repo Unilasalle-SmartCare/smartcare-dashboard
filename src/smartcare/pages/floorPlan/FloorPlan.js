@@ -23,9 +23,9 @@ const FloorPlan = () => {
   const [loadingRequestState, setLoadingRequestState] = useState(false)
   const [methodSubmitState, setMethodSubmitState] = useState("post")
   
-  const [requestResponse, setRequestResponse] = useState()
   const dispatch = useDispatch()
   const floorPlanSelector = useSelector(({ floorPlan }) => floorPlan)
+  const [requestResponse, setRequestResponse] = useState(floorPlanSelector)
 
   const handleRequest = async (value) => {
     setLoadingRequestState(true)
@@ -66,28 +66,28 @@ const FloorPlan = () => {
     }
   }
 
-  useEffect(() => {
-    const load = async () => {
-      const response = await request({ 
-        method: "get", 
-        endpoint: `${process.env.REACT_APP_BASE_API_URL}floorPlan`
-      })
+  // useEffect(() => {
+  //   const load = async () => {
+  //     const response = await request({ 
+  //       method: "get", 
+  //       endpoint: `${process.env.REACT_APP_BASE_API_URL}floorPlan`
+  //     })
   
-      if (response || true) {
-        if (response?.success || true) {
-          setRequestResponse(response?.data?.floorPlan)
-        } else {
-          (response?.errors || []).foreach(error => {
-            toast.error(`${error} 🤯`)
-          })
-        }
-      }
+  //     if (response || true) {
+  //       if (response?.success || true) {
+  //         setRequestResponse(response?.data?.floorPlan)
+  //       } else {
+  //         (response?.errors || []).foreach(error => {
+  //           toast.error(`${error} 🤯`)
+  //         })
+  //       }
+  //     }
       
-      setReadyState(true)
-    }
+  //     setReadyState(true)
+  //   }
 
-    load()
-  }, [])
+  //   load()
+  // }, [])
 
   useEffect(() =>  {
     dispatch({ type: 'set', floorPlan: requestResponse })

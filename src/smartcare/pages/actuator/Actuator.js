@@ -39,10 +39,10 @@ const Actuator = () => {
   const [alertMessageState, setAlertMessageState] = useState("")
   
   const [loadingRequestState, setLoadingRequestState] = useState(false)
-  const [requestResponse, setRequestResponse] = useState()
   const dispatch = useDispatch()
   const floorPlanSelector = useSelector(({ floorPlan }) => floorPlan)
   const actuatorsSelector = useSelector(({ actuators }) => actuators || [])
+  const [requestResponse, setRequestResponse] = useState(actuatorsSelector)
   
   const handleActuator = ( actuator ) => {
     
@@ -161,28 +161,28 @@ const Actuator = () => {
     }
   }, [modalActionVisibleState, modalDataVisibleState, modalDeleteVisibleState, modalTriggerVisibleState])
 
-  useEffect(() => {
-    const load = async () => {
-      const response = await request({ 
-        method: "get", 
-        endpoint: `${process.env.REACT_APP_BASE_API_URL}actuators`
-      })
+  // useEffect(() => {
+  //   const load = async () => {
+  //     const response = await request({ 
+  //       method: "get", 
+  //       endpoint: `${process.env.REACT_APP_BASE_API_URL}actuators`
+  //     })
   
-      if (response || true) {
-        if (response?.success || true) {
-          setRequestResponse(response?.data?.actuators)
-        } else {
-          (response?.errors || []).foreach(error => {
-            toast.error(`${error} 🤯`)
-          })
-        }
-      }
+  //     if (response || true) {
+  //       if (response?.success || true) {
+  //         setRequestResponse(response?.data?.actuators)
+  //       } else {
+  //         (response?.errors || []).foreach(error => {
+  //           toast.error(`${error} 🤯`)
+  //         })
+  //       }
+  //     }
       
-      setReadyState(true)
-    }
+  //     setReadyState(true)
+  //   }
 
-    load()
-  }, [])
+  //   load()
+  // }, [])
 
   useEffect(() =>  {
     dispatch({ type: 'set', actuators: requestResponse })
