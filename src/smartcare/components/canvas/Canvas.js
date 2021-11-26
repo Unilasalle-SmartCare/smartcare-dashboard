@@ -1,17 +1,15 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import './styles.scss'
-import { useSelector } from 'react-redux'
 import { useDimension } from '../../hooks/useDimension'
 
 const SIZE_ITEM_MIN = 10
 const SIZE_ITEM_MAX = 20
 
-const Canvas = ({ data, callbackCoordinate, resetDraw }) => {
+const Canvas = ({ data, floorPlan, callbackCoordinate, resetDraw }) => {
 
   const refCanvas = useRef()
   const refFloorPlan = useRef()
   const canvasDimension = useDimension(refFloorPlan)
-  const floorPlanSelector = useSelector(({ floorPlan }) => floorPlan)
   
   const [itemState, setItemState] = useState([])
   const [pressState, setPressState] = useState(false)
@@ -227,10 +225,10 @@ const Canvas = ({ data, callbackCoordinate, resetDraw }) => {
   return (
     <div className="smtc-canvas">
       <div className="smtc-canvas-wrapper">
-        {floorPlanSelector && (
+        {floorPlan && (
           <>
             <img 
-              src={floorPlanSelector} 
+              src={floorPlan} 
               alt="Planta baixa"
               ref={refFloorPlan}
             />

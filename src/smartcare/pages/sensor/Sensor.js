@@ -47,6 +47,7 @@ const Sensor = () => {
 
   const [requestResponse, setRequestResponse] = useState()
   const dispatch = useDispatch()
+  const floorPlanSelector = useSelector(({ floorPlan }) => floorPlan)
   const sensorsSelector = useSelector(({ sensors }) => sensors || [])
   
   const handleSensor = ( sensor ) => {
@@ -184,192 +185,205 @@ const Sensor = () => {
 
   return (
     <div className="smtc-sensor">
-      <div className="smtc-sensor-wrapper">
-        <div className="smtc-sensor-body">
-          {readyState && 
+      {readyState && floorPlanSelector &&
+      <>
+        <div className="smtc-sensor-wrapper">
+          <div className="smtc-sensor-body">
             <Canvas
               data={sensorsSelector}
+              floorPlan={floorPlanSelector}
               callbackCoordinate={handleSensor}
               resetDraw={!(modalActionVisibleState || modalDataVisibleState || modalDeleteVisibleState)}
             />
-          }
+          </div>
         </div>
-      </div>
-      <CModal centered={true} show={modalDataVisibleState} onClose={() => {
-        setModalDataVisibleState(false)
-      }}>
-        <CForm onSubmit={handleSubmit}>
-          <CModalHeader>
-            <CModalTitle>Informe os dados do sensor!</CModalTitle>
-          </CModalHeader>
-          <CModalBody>
-            <CRow className="mb-3">
-              <CCol sm="12">
-                <InputRadioButton
-                  value={typeState}
-                  onChange={setTypeState}
-                  items={[{
-                    label: "Distância",
-                    value: "distance"
-                  }, {
-                    label: "Presença",
-                    value: "presence"
-                  }]}
-                />
-              </CCol>
-            </CRow>
-            <CRow className="mb-3 align-items-center">
-              <CCol className="col-12">
-                <CLabel htmlFor="create-name">Nome</CLabel>
-              </CCol>
-              <CCol className="col-12">
-                <CInput type="text" placeholder="Nome" id="create-name" onChange={({ target: { value } }) => setNameState(value) } value={nameState} required />
-              </CCol>
-            </CRow>
-            {typeState === "distance" && (
-              <>
-                <CRow className="mb-3 align-items-center">
-                  <CCol className="col-12">
-                    <CLabel>Direção</CLabel>
-                  </CCol>
-                  <CCol className="offset-sm-2 col-sm-6 col-10">
-                    <InputRange
-                      suffix="°"
-                      maxValue={360}
-                      minValue={0}
-                      value={directionState}
-                      onChange={setDirectionState}
-                    />
-                  </CCol>
-                  <CCol className="col-2">
-                    <div className="smtc-circle-ratation" style={{ transform: `rotate(${directionState}deg)` }}></div>
-                  </CCol>
-                </CRow>
+        <CModal centered={true} show={modalDataVisibleState} onClose={() => {
+          setModalDataVisibleState(false)
+        }}>
+          <CForm onSubmit={handleSubmit}>
+            <CModalHeader>
+              <CModalTitle>Informe os dados do sensor!</CModalTitle>
+            </CModalHeader>
+            <CModalBody>
+              <CRow className="mb-3">
+                <CCol sm="12">
+                  <InputRadioButton
+                    value={typeState}
+                    onChange={setTypeState}
+                    items={[{
+                      label: "Distância",
+                      value: "distance"
+                    }, {
+                      label: "Presença",
+                      value: "presence"
+                    }]}
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3 align-items-center">
+                <CCol className="col-12">
+                  <CLabel htmlFor="create-name">Nome</CLabel>
+                </CCol>
+                <CCol className="col-12">
+                  <CInput type="text" placeholder="Nome" id="create-name" onChange={({ target: { value } }) => setNameState(value) } value={nameState} required />
+                </CCol>
+              </CRow>
+              {typeState === "distance" && (
+                <>
+                  <CRow className="mb-3 align-items-center">
+                    <CCol className="col-12">
+                      <CLabel>Direção</CLabel>
+                    </CCol>
+                    <CCol className="offset-sm-2 col-sm-6 col-10">
+                      <InputRange
+                        suffix="°"
+                        maxValue={360}
+                        minValue={0}
+                        value={directionState}
+                        onChange={setDirectionState}
+                      />
+                    </CCol>
+                    <CCol className="col-2">
+                      <div className="smtc-circle-ratation" style={{ transform: `rotate(${directionState}deg)` }}></div>
+                    </CCol>
+                  </CRow>
+                  <CRow className="mb-3 align-items-center">
+                    <CCol sm="12">
+                      <CLabel>Distância da parede</CLabel>
+                    </CCol>
+                    <CCol className="offset-sm-2 col-sm-8">
+                      <InputRange
+                        suffix=" cm"
+                        maxValue={200}
+                        minValue={0}
+                        value={wallDistanceState}
+                        onChange={setWallDistanceState}
+                      />
+                    </CCol>
+                  </CRow>
+                </>
+              )}
+              <hr />
+              <CRow className="mb-3 align-items-center">
+                <CCol className="col-2">
+                  <CLabel htmlFor="create-alert">Alerta</CLabel>
+                </CCol>
+                <CCol className="col-8">
+                  <InputSwitch
+                    id="create-alert"
+                    checked={alertState}
+                    onChange={setAlertState}
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol className="col-12">
+                  <CLabel htmlFor="create-message">Mensagem</CLabel>
+                </CCol>
+                <CCol className="col-12">
+                  <CTextarea placeholder="Mensagem" id="create-message" onChange={({ target: { value } }) => setAlertMessageState(value) } value={alertMessageState} rows="3"></CTextarea>
+                </CCol>
+              </CRow>
+              {typeState === "distance" && (
                 <CRow className="mb-3 align-items-center">
                   <CCol sm="12">
-                    <CLabel>Distância da parede</CLabel>
+                    <CLabel>Distância limite</CLabel>
                   </CCol>
                   <CCol className="offset-sm-2 col-sm-8">
                     <InputRange
-                      suffix=" cm"
-                      maxValue={200}
+                      suffix=" m"
+                      maxValue={20}
                       minValue={0}
-                      value={wallDistanceState}
-                      onChange={setWallDistanceState}
+                      value={alertRangeState}
+                      onChange={setAlertRangeState}
                     />
                   </CCol>
                 </CRow>
-              </>
-            )}
-            <hr />
-            <CRow className="mb-3 align-items-center">
-              <CCol className="col-2">
-                <CLabel htmlFor="create-alert">Alerta</CLabel>
-              </CCol>
-              <CCol className="col-8">
-                <InputSwitch
-                  id="create-alert"
-                  checked={alertState}
-                  onChange={setAlertState}
-                />
-              </CCol>
-            </CRow>
-            <CRow className="mb-3">
-              <CCol className="col-12">
-                <CLabel htmlFor="create-message">Mensagem</CLabel>
-              </CCol>
-              <CCol className="col-12">
-                <CTextarea placeholder="Mensagem" id="create-message" onChange={({ target: { value } }) => setAlertMessageState(value) } value={alertMessageState} rows="3"></CTextarea>
-              </CCol>
-            </CRow>
-            {typeState === "distance" && (
-              <CRow className="mb-3 align-items-center">
-                <CCol sm="12">
-                  <CLabel>Distância limite</CLabel>
-                </CCol>
-                <CCol className="offset-sm-2 col-sm-8">
-                  <InputRange
-                    suffix=" m"
-                    maxValue={20}
-                    minValue={0}
-                    value={alertRangeState}
-                    onChange={setAlertRangeState}
-                  />
-                </CCol>
-              </CRow>
-            )}
-            {typeState === "presence" && (
-              <CRow className="mb-3 align-items-center">
-                <CCol sm="12">
-                  <CLabel>Tempo limite</CLabel>
-                </CCol>
-                <CCol className="offset-sm-2 col-sm-8">
-                  <InputRange
-                    suffix=" min"
-                    maxValue={10}
-                    minValue={0}
-                    value={alertRangeState}
-                    onChange={setAlertRangeState}
-                  />
-                </CCol>
-              </CRow>
-            )}
+              )}
+              {typeState === "presence" && (
+                <CRow className="mb-3 align-items-center">
+                  <CCol sm="12">
+                    <CLabel>Tempo limite</CLabel>
+                  </CCol>
+                  <CCol className="offset-sm-2 col-sm-8">
+                    <InputRange
+                      suffix=" min"
+                      maxValue={10}
+                      minValue={0}
+                      value={alertRangeState}
+                      onChange={setAlertRangeState}
+                    />
+                  </CCol>
+                </CRow>
+              )}
+            </CModalBody>
+            <CModalFooter>
+              <CButton color="secondary" onClick={() => {
+                if (methodSubmitState === "put") {
+                  setModalActionVisibleState(true)
+                }
+                setModalDataVisibleState(false)
+              }}>
+                Cancelar
+              </CButton>
+              <CButton type="submit" color="primary" className={`${loadingRequestState ? "loading" : ""}`} disabled={loadingRequestState}>
+                {methodSubmitState === "put" ? "Atualizar" : "Adicionar"}
+              </CButton>
+            </CModalFooter>
+          </CForm>
+        </CModal>
+        <CModal centered={true} show={modalActionVisibleState} onClose={() => setModalActionVisibleState(false)}>
+          <CModalHeader>
+            <CModalTitle>Escolha a ação desejada para <strong>({nameState})</strong>!</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            Por favor, escolha uma ação abaixo para dar continuidade.
           </CModalBody>
           <CModalFooter>
-            <CButton color="secondary" onClick={() => {
-              if (methodSubmitState === "put") {
-                setModalActionVisibleState(true)
-              }
-              setModalDataVisibleState(false)
-            }}>
+            <CButton type="button" color="secondary" onClick={() => setModalActionVisibleState(false)}>
               Cancelar
             </CButton>
-            <CButton type="submit" color="primary" className={`${loadingRequestState ? "loading" : ""}`} disabled={loadingRequestState}>
-              {methodSubmitState === "put" ? "Atualizar" : "Adicionar"}
-            </CButton>
+            <CButton type="button" color="primary" onClick={() => {
+              setMethodSubmitState("put")
+              setModalDataVisibleState(true)
+              setModalActionVisibleState(false)
+            }}>Atualizar</CButton>
+            <CButton type="button" color="danger" onClick={() => {
+              setMethodSubmitState("delete")
+              setModalDeleteVisibleState(true)
+              setModalActionVisibleState(false)
+            }}>Deletar</CButton>
           </CModalFooter>
-        </CForm>
-      </CModal>
-      <CModal centered={true} show={modalActionVisibleState} onClose={() => setModalActionVisibleState(false)}>
-        <CModalHeader>
-          <CModalTitle>Escolha a ação desejada para <strong>({nameState})</strong>!</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          Por favor, escolha uma ação abaixo para dar continuidade.
-        </CModalBody>
-        <CModalFooter>
-          <CButton type="button" color="secondary" onClick={() => setModalActionVisibleState(false)}>
-            Cancelar
-          </CButton>
-          <CButton type="button" color="primary" onClick={() => {
-            setMethodSubmitState("put")
-            setModalDataVisibleState(true)
-            setModalActionVisibleState(false)
-          }}>Atualizar</CButton>
-          <CButton type="button" color="danger" onClick={() => {
-            setMethodSubmitState("delete")
-            setModalDeleteVisibleState(true)
-            setModalActionVisibleState(false)
-          }}>Deletar</CButton>
-        </CModalFooter>
-      </CModal>
-      <CModal centered={true} show={modalDeleteVisibleState} onClose={() => setModalDeleteVisibleState(false)}>
-        <CModalHeader>
-          <CModalTitle>Tem certeza?</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          Ao confirmar a ação, o sensor será excluído do sistema.
-        </CModalBody>
-        <CModalFooter>
-          <CButton type="button" color="secondary" onClick={() => {
-            setModalActionVisibleState(true)
-            setModalDeleteVisibleState(false)
-          }}>
-            Voltar
-          </CButton>
-          <CButton color="primary" type="button" className={`${loadingRequestState ? "loading" : ""}`} disabled={loadingRequestState} onClick={handleSubmit}>Confirmar</CButton>
-        </CModalFooter>
-      </CModal>
+        </CModal>
+        <CModal centered={true} show={modalDeleteVisibleState} onClose={() => setModalDeleteVisibleState(false)}>
+          <CModalHeader>
+            <CModalTitle>Tem certeza?</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            Ao confirmar a ação, o sensor será excluído do sistema.
+          </CModalBody>
+          <CModalFooter>
+            <CButton type="button" color="secondary" onClick={() => {
+              setModalActionVisibleState(true)
+              setModalDeleteVisibleState(false)
+            }}>
+              Voltar
+            </CButton>
+            <CButton color="primary" type="button" className={`${loadingRequestState ? "loading" : ""}`} disabled={loadingRequestState} onClick={handleSubmit}>Confirmar</CButton>
+          </CModalFooter>
+        </CModal>
+      </>
+      }
+      {!floorPlanSelector && 
+        <CModal centered={true} show={true}>
+          <CModalHeader>
+            <CModalTitle>Por favor, cadastre uma planta baixa</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            Para utilizar este recurso do sistema é necessário que cadastre uma planta baixa da residência em que o paciente se encontra.
+          </CModalBody>
+        </CModal>
+      }
     </div>
   )
 }

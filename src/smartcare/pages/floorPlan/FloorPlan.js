@@ -95,32 +95,34 @@ const FloorPlan = () => {
   
   return (
     <div className="smtc-floor-plan">
-      <div className="smtc-floor-plan-wrapper">
-        <div className="smtc-floor-plan-header">
-          {readyState && 
-            <InputImageUploading
-              value={floorPlanSelector}
-              handleAction={handleAction}
-              handleRequest={handleRequest}
-              loadingRequest={loadingRequestState}
-            />
-          }
-        </div>
-      </div>
-      <CModal centered={true} show={modalVisibleState} onClose={() => setModalVisibleState(false)}>
-        <CModalHeader>
-          <CModalTitle>Tem certeza?</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          Ao confirmar a ação, a planta baixa será excluída e você não poderá utilizar alguns recursos do sistema.
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalVisibleState(false)}>
-            Fechar
-          </CButton>
-          <CButton color="primary" className={`${loadingRequestState ? "loading" : ""}`} onClick={() => REMOVE_FLOOR_PLAN.fn()}>Confirmar</CButton>
-        </CModalFooter>
-      </CModal>
+      {readyState && 
+        <>
+          <div className="smtc-floor-plan-wrapper">
+            <div className="smtc-floor-plan-header">
+              <InputImageUploading
+                value={floorPlanSelector}
+                handleAction={handleAction}
+                handleRequest={handleRequest}
+                loadingRequest={loadingRequestState}
+              />
+            </div>
+          </div>
+          <CModal centered={true} show={modalVisibleState} onClose={() => setModalVisibleState(false)}>
+            <CModalHeader>
+              <CModalTitle>Tem certeza?</CModalTitle>
+            </CModalHeader>
+            <CModalBody>
+              Ao confirmar a ação, a planta baixa será excluída e você não poderá utilizar alguns recursos do sistema.
+            </CModalBody>
+            <CModalFooter>
+              <CButton color="secondary" onClick={() => setModalVisibleState(false)}>
+                Fechar
+              </CButton>
+              <CButton color="primary" className={`${loadingRequestState ? "loading" : ""}`} onClick={() => REMOVE_FLOOR_PLAN.fn()}>Confirmar</CButton>
+            </CModalFooter>
+          </CModal>
+        </>
+      }
     </div>
   )
 }
