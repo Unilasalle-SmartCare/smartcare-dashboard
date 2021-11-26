@@ -1,8 +1,9 @@
-import React, { Suspense } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import {
   Redirect,
   Route,
-  Switch
+  Switch,
+  useHistory
 } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -35,16 +36,9 @@ const loading = (
 )
 
 const Dashboard = () => {
+  const history = useHistory()
   const dispatch = useDispatch()
-
-  // Check user logged
-  const user = useSelector(({ user }) => user)
-  if (!user) {
-    return (
-      <Redirect to="/" />
-    )
-  }
-  // / Check user logged
+  const userSelector = useSelector(({ user }) => user)
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -158,6 +152,12 @@ const Dashboard = () => {
       </CFooter>
     )
   }
+
+  // useEffect(() => {
+  //   if (!userSelector) {
+  //     history.push("/login")
+  //   }
+  // }, [userSelector, history])
 
   return (
     <div className="c-app c-default-layout">
